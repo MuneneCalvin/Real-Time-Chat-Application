@@ -1,8 +1,9 @@
 {
   "name": "Real-Time-Chat-Application (Backend)",
   "version": "1.0.0",
+  "bin": "bin/createNodejsApp.js",
   "description": "",
-  "main": "index.js",
+  "main": "src/index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "pm2 start ecosystem.config.json --env production --no-daemon",
