@@ -1,5 +1,5 @@
 {
-  "name": "Real-Time-Chat-Application (Backend)",
+  "name": "real-time-chat-application-backend",
   "version": "1.0.0",
   "bin": "bin/createNodejsApp.js",
   "description": "",
