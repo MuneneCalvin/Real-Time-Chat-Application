@@ -2,8 +2,6 @@ const router = require('express');
 const verifyToken = require('../middlewares/verifyToken');
 const { authController } = require('../controllers');
 
-const router = express.Router();
-
 
 router.post('/signup', authController.signup);
 router.post('/login', authController.login);

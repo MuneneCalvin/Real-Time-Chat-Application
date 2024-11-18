@@ -11,7 +11,7 @@ const morgan = require('./config/morgan');
 const logger = require('./config/logger');
 const { jwtStrategy } = require('./config/passport');
 const ApiError = require('./utils/ApiError')
-// const routes = require('./routes');
+const routes = require('./routes');
 
 
 const app = express();
@@ -54,7 +54,7 @@ app.get('/', (req, res) => {
     res.send("Hello, welcome to the Real Time Chat App. 🚀👋");
 });
 
-// app.use(routes);
+app.use(routes);
 
 // send back a 404 error for any unknown api request
 app.use((req, res, next) => {
