@@ -1,7 +1,8 @@
 const  bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const httpStatus = require('http-status');
-const { Users } = require('../models');
+const { tokenService, userService } = require('../services');
+const { Users, Tokens } = require('../models');
 
 
 const signup = async (req, res) => {
@@ -10,7 +11,7 @@ const signup = async (req, res) => {
         return res.status(httpStatus.BAD_REQUEST).json({ message: 'Passwords do not match' });
     }
 
-    const user = await Users.findOne({ email });
+    const user = await userService.getUserByEmail(email);
     if (user) {
         return res.status(httpStatus.BAD_REQUEST).json({ message: 'User already registered' });
     }
@@ -32,19 +33,18 @@ const signup = async (req, res) => {
 
 const login = async (req, res) => {
     const { email, password } = req.body;
-    const user = await Users.findOne({ email });
-    if (!user) {
-        return res.status(httpStatus.UNAUTHORIZED).json({ message: 'Invalid Email or Password' });
-    }
+    let user = await getUserByCredentials(email, password);
+    if (user) {
+        const token = await tokenService.generateAuthTokens(user);
 
-    const isPasswordMatch = await bcrypt.compare(password, user.password);
-    if (!isPasswordMatch) {
-        return res.status(httpStatus.UNAUTHORIZED).json({ message: 'Invalid Credentials' });
-    }
+        const isAdmin = user.role === 'admin' ? true : false;
+        const isMale = user.gender == 'Male' ? true : user.gender == 'Female' ? true : false;
 
-    // Generate Token
-    const token = jwt.sign({ id: user._id, name: user.full_name }, process.env.JWT_SECRET, { expiresIn: '1d' });
-    res.status(httpStatus.OK).json({ message: 'User Logged In Successfully', token });
+        let response = { isAdmin, isMale, token, user };
+        return response
+    } else {
+        return res.status(httpStatus.UNAUTHORIZED).json({ message: 'Incorrect email or password' });
+    }
 };
 
 const forgotPassword = async (req, res) => {
@@ -64,22 +64,24 @@ const forgotPassword = async (req, res) => {
     res.status(httpStatus.OK).json({ message: 'Password Reset Email Sent' });
 };
 
-const resetPassword = async (req, res) => {
-    const { token, password } = req.body;
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    const user = await Users.findById(decoded.id);
+const resetPassword = async (resetPasswordToken, newPassword) => {
+    const resetPasswordTokenDoc = await tokenService.verifyToken(resetPasswordToken, tokenTypes.RESET_PASSWORD);
+    const user = await Users.findById(resetPasswordTokenDoc.user);
     if (!user) {
         return res.status(httpStatus.NOT_FOUND).json({ message: 'User not found' });
     }
 
-    // Hash Password
-    const hashedPassword = await bcrypt.hash(password, 10);
-    await Users.findByIdAndUpdate(user._id, { password: hashedPassword });
+    await userService.updateUser(user._id, { password: newPassword });
+    await Tokens.deleteMany({ user: user._id, type: tokenTypes.RESET_PASSWORD });
     res.status(httpStatus.OK).json({ message: 'Password Reset Successfully' });
 };
 
-const logout = async (req, res) => {
-    res.status(httpStatus.OK).json({ message: 'User Logged Out Successfully' });
+const logout = async (refreshToken) => {
+    const refreshTokenDoc = await Token.findOne({ token: refreshToken, type: tokenTypes.REFRESH, blacklisted: false });
+    if (!refreshTokenDoc) {
+        throw new ApiError(httpStatus.NOT_FOUND, 'Not found');
+    }
+    await refreshTokenDoc.remove();
 };
 
 

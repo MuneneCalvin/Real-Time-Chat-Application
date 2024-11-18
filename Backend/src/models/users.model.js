@@ -43,6 +43,10 @@ const userSchema = new mongoose.Schema({
         token: String,
         expires: Date,
     },
+    is_deleted: {
+        type: Boolean,
+        default: false,
+    },
 }, {
     timestamps: true,
 });
