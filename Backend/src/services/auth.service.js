@@ -11,20 +11,17 @@ const signup = async (userData) => {
         throw new Error('Passwords do not match');
     }
 
-    const user = await Users.findOne({ email });
+    const user = await getUserByEmail(email);
     if (user) {
         throw new Error('Email already exists');
     }
 
-    // Hash password
     const hashedPassword = await bcryptjs.hash(password, 10);
     
-    // Assign Profile Picture to User based on gender
     const maleImageUrl = `https://avatar.iran.liara.run/public/boy?username=${first_name}`;
     const femaleImageUrl = `https://avatar.iran.liara.run/public/boy?username=${first_name}`;
     const image_url = gender === 'Male' ? maleImageUrl : femaleImageUrl;
 
-    // Create the user in the database
     const newUser = await Users.create({ 
         full_name: `${first_name} ${last_name}`, 
         email, 
@@ -34,8 +31,10 @@ const signup = async (userData) => {
         gender,
     });
 
-    // Generate Token
     const token = jwt.sign({ id: newUser._id, name: newUser.full_name }, process.env.JWT_SECRET, { expiresIn: '1d' });
+    const token_insert = new Tokens({ token, user: newUser._id, type: 'access', blacklisted: false, expires: process.env.JWT_ACCESS_EXPIRATION_MINUTES });
+    await token_insert.save();
+
     return { token, user: newUser };
 };
 
@@ -46,9 +45,10 @@ const login = async (userData) => {
         const token = await generateAuthTokens(user);
 
         const isAdmin = user.role === 'admin' ? true : false;
-        const isMale = user.gender == 'Male' ? true : user.gender == 'Female' ? true : false;
+        const isMale = user.gender === 'Male' ? true : false;
+        const isFemale = user.gender === 'Female' ? true : false;
 
-        let response = {user, isAdmin, isMale, token };
+        let response = { isAdmin, isMale, isFemale, token, user };
         return response;   
     } else {
         return "User not found";
