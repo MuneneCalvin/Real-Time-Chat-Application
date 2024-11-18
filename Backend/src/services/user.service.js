@@ -33,6 +33,11 @@ const getUserByCredentials = async (email, password) => {
     return user;
 };
 
+const getUsersDropdown = async () => {
+    const users = await Users.find({ is_deleted: false }).select('full_name image_url');
+    return users;
+}
+
 const updateUser = async (userId, updateBody) => {
     const user = await getUserById(userId);
     if (!user) {
@@ -55,5 +60,6 @@ module.exports = {
     getUserById,
     getUserByEmail,
     getUserByCredentials,
+    getUsersDropdown,
     updateUser,
 };
