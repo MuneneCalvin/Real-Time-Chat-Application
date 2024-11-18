@@ -15,11 +15,12 @@ const getUserByEmail = async (email) => {
     if (users == []) {
         throw new ApiError(httpStatus.NOT_FOUND, 'Cannot find User');
     }
+
     return users;
 };
 
 const getUserByCredentials = async (email, password) => {
-    const user = await Users.findOne({ email: email, password: password });
+    const user = await Users.findOne({ email: email });
     if (!user) {
         throw new ApiError(httpStatus.UNAUTHORIZED, 'Incorrect email or password');
     }

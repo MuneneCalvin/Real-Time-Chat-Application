@@ -4,13 +4,13 @@ const moment = require('moment');
 const config = require('../config/config');
 const ApiError = require('../utils/ApiError');
 const { tokenTypes } = require('../config/tokens');
+const { Tokens } = require('../models');
 
 
 const generateAuthTokens = async (user) => {
     const accessTokenExpires = moment().add(process.env.JWT_ACCESS_EXPIRATION_MINUTES, 'minutes');
     const accessPayload = {
         _id: user._id,
-        role_id: user.role_ID,
         iat: moment().unix(),
         exp: accessTokenExpires.unix(),
         type: 'access',
@@ -23,7 +23,6 @@ const generateAuthTokens = async (user) => {
 
     const refreshPayload = {
         _id: user._id,
-        role_id: user.role_ID,
         iat: moment().unix(),
         exp: refreshTokenExpires.unix(),
         type: 'refresh',
@@ -35,23 +34,21 @@ const generateAuthTokens = async (user) => {
         blacklisted: false,
         token: refreshToken,
         user: user._id,
-        role: user.role_ID,
         expires: refreshTokenExpires,
         type: 'refresh',
     };
 
-    const token_insert = new Token(token);
+    const token_insert = new Tokens(token);
     let insertToken = await token_insert.save();
-    // await saveToken(refreshToken, user.id, refreshTokenExpires, tokenTypes.REFRESH, false, isFreelancer);
 
     return {
         access: {
-        token: accessToken,
-        expires: accessTokenExpires.toDate(),
+            token: accessToken,
+            expires: accessTokenExpires.toDate(),
         },
         refresh: {
-        token: refreshToken,
-        expires: refreshTokenExpires.toDate(),
+            token: refreshToken,
+            expires: refreshTokenExpires.toDate(),
         },
     };
 };
