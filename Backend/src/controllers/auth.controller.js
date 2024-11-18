@@ -11,8 +11,7 @@ const signup = async (req, res) => {
 
 const login = async (req, res) => {
     try {
-        const { email, password } = req.body;
-        const user = await authService.login(email, password);
+        const user = await authService.login(req.body);
         return res.status(httpStatus.OK).json({ message: 'User Logged In Successfully', user });
     } catch (error) {
         return res.status(httpStatus.UNAUTHORIZED).json({ message: error.message });
@@ -30,7 +29,7 @@ const forgotPassword = async (req, res) => {
 
 const resetPassword = async (req, res) => {
     try {
-        await authService.resetPassword(req.body);
+        await authService.resetPassword(req.params.token, req.body.password);
         return res.status(httpStatus.OK).json({ message: 'Password Reset Successfully' });
     } catch (error) {
         return res.status(httpStatus.BAD_REQUEST).json({ message: error.message });
