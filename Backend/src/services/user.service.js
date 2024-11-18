@@ -1,6 +1,6 @@
 const { ObjectId } = require('mongodb');
 const httpStatus = require('http-status');
-const bcrypt = require('bcrypt');
+const bcryptjs = require('bcryptjs');
 const { Users } = require('../models');
 const ApiError = require('../utils/ApiError');
 
@@ -24,7 +24,7 @@ const getUserByCredentials = async (email, password) => {
         throw new ApiError(httpStatus.UNAUTHORIZED, 'Incorrect email or password');
     }
 
-    const isPasswordMatch = await bcrypt.compare(password, user.password);
+    const isPasswordMatch = await bcryptjs.compare(password, user.password);
     if (!isPasswordMatch) {
         throw new ApiError(httpStatus.UNAUTHORIZED, 'Incorrect email or password');
     }
@@ -43,7 +43,7 @@ const updateUser = async (userId, updateBody) => {
     }
 
     if (updateBody.password) {
-        updateBody.password = await bcrypt.hash(updateBody.password, 10);
+        updateBody.password = await bcryptjs.hash(updateBody.password, 10);
     }
 
     const updatedUser = await Users.findOneAndUpdate({ _id: userId }, { $set: updateBody }, { new: true });

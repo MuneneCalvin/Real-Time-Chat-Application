@@ -1,4 +1,4 @@
-const  bcrypt = require('bcrypt');
+const bcryptjs = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const httpStatus = require('http-status');
 const { tokenService, userService } = require('../services');
@@ -17,7 +17,7 @@ const signup = async (req, res) => {
     }
 
     // Hash password
-    const hashedPassword = await bcrypt.hash(password, 10);
+    const hashedPassword = await bcryptjs.hash(password, 10);
     await Users.create({ email, password: hashedPassword });
 
     // Assign Profile Picture to User
