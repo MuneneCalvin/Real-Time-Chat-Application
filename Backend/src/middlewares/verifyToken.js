@@ -12,13 +12,14 @@ async function verifyToken(req, res, next) {
     const token = header.split(' ')[1];
     try {
         const decoded = jwtDecode(token);
+
         // Check if the token is expired
         if (Date.now() >= decoded.exp * 1000) {
         logger.info(`Token Expired`);
         return res.status(401).send({ message: 'Token expired.' });
         }
 
-        const user = await Users.findById(decoded._id).select('-password');
+        const user = await Users.findById(decoded._id).select('password');
         req.userId = decoded._id;
         req.userName = user.full_name;
 
