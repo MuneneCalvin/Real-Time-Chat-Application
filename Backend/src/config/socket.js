@@ -2,6 +2,7 @@ const { Server } = require('socket.io');
 const http = require('http');
 const logger = require('../config/logger');
 const { Users, Messages } = require('../models');
+const { sendMessageToConversation, getMessagesOfConversation } = require('../services/message.service');
 
 const httpServer = http.createServer();
 const io = new Server(httpServer, {
@@ -20,20 +21,27 @@ io.on('connection', (socket) => {
             logger.error('User not found');
             return;
         }
-
         socket.join(userId);
     });
 
-    socket.on('message', async (data) => {
+    socket.on('sendMessageToConversation', async (data) => {
         const { sender, receiver, message } = data;
-        const newMessage = new Messages({
-            sender,
-            receiver,
-            message,
-        });
-        await newMessage.save();
+        try {
+            const sentMessage = await sendMessageToConversation(sender, receiver, message);
+            socket.emit('messageSent', sentMessage);
+        } catch (error) {
+            logger.error('Error in sendMessageToConversation event:', error);
+        }
+    });
 
-        io.to(receiver).emit('message', newMessage);
+    socket.on('getMessagesOfConversation', async (data) => {
+        const { userId1, userId2 } = data;
+        try {
+            const messages = await getMessagesOfConversation(userId1, userId2);
+            socket.emit('conversationMessages', messages);
+        } catch (error) {
+            logger.error('Error in getMessagesOfConversation event:', error);
+        }
     });
 
     socket.on('typing', (data) => {
@@ -59,9 +67,10 @@ io.on('connection', (socket) => {
     });
 
     socket.on('disconnect', () => {
-        logger.info('user disconnected');
+        logger.info('User disconnected');
     });
 });
+
 
 
 

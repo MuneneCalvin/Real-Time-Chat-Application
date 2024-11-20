@@ -1,6 +1,10 @@
 const mongoose = require('mongoose');
 
 const messageSchema = new mongoose.Schema({
+    conversation: {
+        type: mongoose.Schema.Types.ObjectId, ref: 'Conversation',
+        required: true,
+    },
     message: {
         type: String,
         required: true,
@@ -12,6 +16,10 @@ const messageSchema = new mongoose.Schema({
     receiver: {
         type: mongoose.Schema.Types.ObjectId, ref: 'User',
         required: true,
+    },
+    is_read: {
+        type: Boolean,
+        default: false
     },
     is_deleted: {
         type: Boolean,
