@@ -56,10 +56,20 @@ const updateUser = async (userId, updateBody) => {
     return updatedUser;
 };
 
+const deleteUser = async (userId) => {
+    const user = await getUserById(userId);
+    if (!user) {
+        throw new ApiError(httpStatus.NOT_FOUND, 'User not found');
+    }
+
+    await Users.updateOne({ _id: userId }, { is_deleted: true });
+}
+
 module.exports = {
     getUserById,
     getUserByEmail,
     getUserByCredentials,
     getUsersDropdown,
     updateUser,
+    deleteUser,
 };
