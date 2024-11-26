@@ -2,24 +2,24 @@ const GenderCheckbox = ({ onCheckboxChange, selectedGender }) => {
 	return (
 		<div className='flex'>
 			<div className='form-control'>
-				<label className={`label gap-2 cursor-pointer ${selectedGender === "male" ? "selected" : ""} `}>
+				<label className={`label gap-2 cursor-pointer ${selectedGender === "Male" ? "selected" : ""} `}>
 					<span className='label-text'>Male</span>
 					<input
 						type='checkbox'
 						className='checkbox border-slate-900'
-						checked={selectedGender === "male"}
-						onChange={() => onCheckboxChange("male")}
+						checked={selectedGender === "Male"}
+						onChange={() => onCheckboxChange("Male")}
 					/>
 				</label>
 			</div>
 			<div className='form-control'>
-				<label className={`label gap-2 cursor-pointer  ${selectedGender === "female" ? "selected" : ""}`}>
+				<label className={`label gap-2 cursor-pointer  ${selectedGender === "Female" ? "selected" : ""}`}>
 					<span className='label-text'>Female</span>
 					<input
 						type='checkbox'
 						className='checkbox border-slate-900'
-						checked={selectedGender === "female"}
-						onChange={() => onCheckboxChange("female")}
+						checked={selectedGender === "Female"}
+						onChange={() => onCheckboxChange("Female")}
 					/>
 				</label>
 			</div>
@@ -27,24 +27,3 @@ const GenderCheckbox = ({ onCheckboxChange, selectedGender }) => {
 	);
 };
 export default GenderCheckbox;
-
-// STARTER CODE FOR THIS FILE
-// const GenderCheckbox = () => {
-// 	return (
-// 		<div className='flex'>
-// 			<div className='form-control'>
-// 				<label className={`label gap-2 cursor-pointer`}>
-// 					<span className='label-text'>Male</span>
-// 					<input type='checkbox' className='checkbox border-slate-900' />
-// 				</label>
-// 			</div>
-// 			<div className='form-control'>
-// 				<label className={`label gap-2 cursor-pointer`}>
-// 					<span className='label-text'>Female</span>
-// 					<input type='checkbox' className='checkbox border-slate-900' />
-// 				</label>
-// 			</div>
-// 		</div>
-// 	);
-// };
-// export default GenderCheckbox;
