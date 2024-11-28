@@ -54,7 +54,7 @@ app.get('/', (req, res) => {
     res.send("Hello, welcome to the Real Time Chat App. 🚀👋");
 });
 
-app.use('/.netlify/functions/api', routes);
+app.use(routes);
 
 // send back a 404 error for any unknown api request
 app.use((req, res, next) => {
