@@ -73,6 +73,7 @@ const SignUp = () => {
 						/>
 					</div>
 
+					{/* Password */}
 					<div>
 						<label className='label'>
 							<span className='text-base label-text'>Password</span>
@@ -118,4 +119,6 @@ const SignUp = () => {
 		</div>
 	);
 };
+
+
 export default SignUp;
