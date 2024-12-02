@@ -1,6 +1,9 @@
 import { useState } from "react";
+import axios from "axios";
 import toast from "react-hot-toast";
 import { useAuthContext } from "../context/AuthContext";
+
+let url = process.env.REACT_APP_SERVER_URL;
 
 const useSignup = () => {
 	const [loading, setLoading] = useState(false);
@@ -12,11 +15,11 @@ const useSignup = () => {
 
 		setLoading(true);
 		try {
-			const apiUrl = 'http://localhost:9099';
-			const res = await fetch(`${apiUrl}/auth/signup`, {
+			const res = await axios({
+				url: `${url}/auth/signup`, 
 				method: "POST",
 				headers: { "Content-Type": "application/json" },
-				body: JSON.stringify({ first_name, last_name, email, password, confirmPassword, gender, role }),
+				data: { first_name, last_name, email, gender, role, password },
 			});
 
 			const data = await res.json();
@@ -32,8 +35,34 @@ const useSignup = () => {
 		}
 	};
 
-	return { loading, signup };
+	// google login auth
+	const googleAuth = async (tokenId) => {
+		setLoading(true);
+		try {
+			const res = await axios({
+				url: `${url}/auth/google`, 
+				method: "POST",
+				headers: { "Content-Type": "application/json" },
+				data: { tokenId },
+			});
+
+			const data = await res.json();
+			if (data.error) {
+				throw new Error(data.error);
+			}
+			localStorage.setItem("chat-user", JSON.stringify(data));
+			setAuthUser(data);
+		} catch (error) {
+			toast.error(error.message);
+		} finally {
+			setLoading(false);
+		}
+	}
+
+	return { loading, signup, googleAuth };
 };
+
+
 export default useSignup;
 
 function handleInputErrors({ first_name, last_name, email, password, confirmPassword, gender, role }) {
