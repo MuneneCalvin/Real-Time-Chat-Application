@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import { BsEmojiLaughing, BsEmojiExpressionless } from "react-icons/bs";
 import GenderCheckbox from "./GenderCheckbox";
 import { useState } from "react";
 import useSignup from "../../hooks/useSignup";
@@ -13,7 +14,7 @@ const SignUp = () => {
 		gender: "",
 		role: "user",
 	});
-
+	const [showPass, setShowPass] = useState(false);
 	const { loading, signup } = useSignup();
 
 	const handleCheckboxChange = (gender) => {
@@ -85,6 +86,10 @@ const SignUp = () => {
 							value={inputs.password}
 							onChange={(e) => setInputs({ ...inputs, password: e.target.value })}
 						/>
+
+						{
+							!showPass ? <button type='button'><BsEmojiLaughing onClick={() => setShowPass(!showPass)} className='text-[#fff] absolute top-3 right-4 sm:right-6 w-[30px] h-[25px]' /></button> : <button type='button'> <BsEmojiExpressionless onClick={() => setShowPass(!showPass)} className='text-[#fff] absolute top-3 right-4 sm:right-6 w-[30px] h-[25px]' /></button>
+						}
 					</div>
 
 					<div>
@@ -98,6 +103,10 @@ const SignUp = () => {
 							value={inputs.confirmPassword}
 							onChange={(e) => setInputs({ ...inputs, confirmPassword: e.target.value })}
 						/>
+
+						{
+							!showPass ? <button type='button'><BsEmojiLaughing onClick={() => setShowPass(!showPass)} className='text-[#fff] absolute top-3 right-4 sm:right-6 w-[30px] h-[25px]' /></button> : <button type='button'> <BsEmojiExpressionless onClick={() => setShowPass(!showPass)} className='text-[#fff] absolute top-3 right-4 sm:right-6 w-[30px] h-[25px]' /></button>
+						}
 					</div>
 
 					<GenderCheckbox onCheckboxChange={handleCheckboxChange} selectedGender={inputs.gender} />
