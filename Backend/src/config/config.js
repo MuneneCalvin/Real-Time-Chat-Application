@@ -44,12 +44,12 @@ module.exports = {
     clientUrl: envVars.CLIENT_URL,
     mongoose: {
         url: envVars.DATABASE_URL,
-        // options: {
-        // useNewUrlParser: true,
-        // useUnifiedTopology: true,
-        // useFindAndModify: false,
-        // useCreateIndex: true,
-        // },
+        options: {
+        useNewUrlParser: true,
+        useUnifiedTopology: true,
+        useFindAndModify: false,
+        useCreateIndex: true,
+        },
     },
     jwt: {
         secret: envVars.JWT_SECRET,
