@@ -7,7 +7,7 @@ dotenv.config({ path: path.join(__dirname, '../../.env') });
 const envVarsSchema = Joi.object()
     .keys({
         NODE_ENV: Joi.string().valid('production', 'staging', 'development', 'test', 'preprod').required(),
-        PORT: Joi.number().default(3000),
+        PORT: Joi.number().default(3000).required(),
         DATABASE_URL: Joi.string().required().description('Mongo DB url'),
         CLIENT_URL: Joi.string().required().description('Client Portal url'),
         JWT_SECRET: Joi.string().required().description('JWT secret key'),
@@ -28,7 +28,6 @@ const envVarsSchema = Joi.object()
         FIREBASE_MESSAGING_SENDER_ID: Joi.string().required().description('Firebase messaging sender id'),
         FIREBASE_APP_ID: Joi.string().required().description('Firebase app id'),
         FIREBASE_MEASUREMENT_ID: Joi.string().required().description('Firebase measurement id'),
-
     })
     .unknown();
 
