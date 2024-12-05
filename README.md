@@ -58,7 +58,7 @@ In the second terminal
 - Supply the following credentials
 
 ```
-PORT=8000
+PORT=9099
 URL=
 SECRET=
 CLIENT_ID=
